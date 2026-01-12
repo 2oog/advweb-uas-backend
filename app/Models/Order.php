@@ -18,13 +18,13 @@ class Order extends Model
         'payment_status',
         'table_number',
         'tax_percent',
-        'global_discount',
+        'global_discount_percent',
     ];
 
     protected $casts = [
         'order_date' => 'datetime',
         'tax_percent' => 'decimal:2',
-        'global_discount' => 'decimal:2',
+        'global_discount_percent' => 'decimal:2',
     ];
 
     public function orderItems()

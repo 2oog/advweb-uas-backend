@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\MenuItem;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +18,7 @@ class OrderController extends Controller
 
         if ($request->has('month') && $request->has('year')) {
             $query->whereYear('order_date', $request->year)
-                  ->whereMonth('order_date', $request->month);
+                ->whereMonth('order_date', $request->month);
         }
 
         if ($request->has('sort_by')) {
@@ -44,8 +43,8 @@ class OrderController extends Controller
             'subtotal' => 'required|integer',
             'tax_amount' => 'required|integer',
             'total_amount' => 'required|integer',
-            'tax_percent' => 'required|numeric', // API requires it per example, though default mentioned. Let's make it nullable or usually required. Example shows it provided.
-            'global_discount' => 'required|numeric',
+            'tax_percent' => 'required|numeric|min:0|max:100',
+            'global_discount_percent' => 'required|numeric|min:0|max:100',
             'order_items' => 'required|array',
             'order_items.*.id' => 'required|exists:menu_items,id',
             'order_items.*.menu_name' => 'required|string',
@@ -65,14 +64,14 @@ class OrderController extends Controller
                 'payment_method' => $validated['payment_method'],
                 'payment_status' => 'PAID',
                 'tax_percent' => $validated['tax_percent'] ?? 0.1,
-                'global_discount' => $validated['global_discount'] ?? 0,
+                'global_discount_percent' => $validated['global_discount_percent'] ?? 0,
             ]);
 
             $orderItemsData = [];
             foreach ($validated['order_items'] as $item) {
                 // We primarily trust the client, but ID is validated to exist.
                 // We use the client provided name, price, subtotal.
-                
+
                 $orderItemsData[] = [
                     'menu_item_id' => $item['id'],
                     'menu_name' => $item['menu_name'],

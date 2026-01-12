@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -20,7 +21,7 @@ return new class extends Migration {
             $table->string('payment_status');
             $table->string('table_number');
             $table->decimal('tax_percent', 5, 2)->default(0.1);
-            $table->decimal('global_discount', 12, 2)->default(0);
+            $table->decimal('global_discount_percent', 5, 2)->default(0);
             $table->timestamps();
         });
     }

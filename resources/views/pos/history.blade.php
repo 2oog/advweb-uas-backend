@@ -261,10 +261,10 @@
                     <span>Subtotal</span>
                     <span>Rp ${Number(order.subtotal).toLocaleString()}</span>
                 </div>
-                ${parseFloat(order.global_discount) > 0 ? `
+                ${parseFloat(order.global_discount_percent) > 0 ? `
                 <div class="d-flex justify-content-between small text-danger mb-1">
-                    <span>Global Discount</span>
-                    <span>-Rp ${Number(order.global_discount).toLocaleString()}</span>
+                    <span>Global Discount (${Number(order.global_discount_percent)}%)</span>
+                    <span>-Rp ${Number(order.subtotal - (order.total_amount - order.tax_amount)).toLocaleString()}</span>
                 </div>` : ''}
                 <div class="d-flex justify-content-between small text-muted mb-1">
                     <span>Total Before Tax</span>
@@ -286,7 +286,13 @@
 
     async function requestPrint(orderId) {
        try {
-           const res = await fetch(`{{ url("/api/orders") }}/${orderId}/print`, { method: 'POST' });
+           const res = await fetch(`{{ url("/api/orders") }}/${orderId}/print`, { 
+               method: 'POST',
+               headers: {
+                   'Authorization': `Bearer ${apiToken}`,
+                   'Accept': 'application/json'
+               }
+           });
            if(res.ok) showToast('Print command sent!', 'success');
            else showToast('Print failed (Check server logs)', 'danger');
        } catch (e) {
@@ -328,8 +334,6 @@
     }
 
     // Init
-    // Set default month/year to empty (all) or current? 
-    // Let's keep filters optional so they see everything by default, but new design allows selecting.
     fetchHistory();
 </script>
 </body>

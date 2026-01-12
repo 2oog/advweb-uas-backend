@@ -129,8 +129,8 @@
 
                             <div class="row mb-2">
                                 <div class="col-6">
-                                    <label class="small text-muted">Global Discount (Rp)</label>
-                                    <input type="number" class="form-control form-control-sm" id="global-discount" value="0" onchange="renderCart()">
+                                    <label class="small text-muted">Global Discount (%)</label>
+                                    <input type="number" class="form-control form-control-sm" id="global-discount-percent" value="0" onchange="renderCart()">
                                 </div>
                                 <div class="col-6">
                                     <label class="small text-muted">Tax (%)</label>
@@ -142,7 +142,7 @@
                                 <span>Subtotal</span>
                                 <span class="fw-bold" id="summ-subtotal">Rp 0</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-1 text-success">
+                            <div class="d-flex justify-content-between mb-1 text-danger">
                                 <small>Discount</small>
                                 <small id="summ-discount">Rp 0</small>
                             </div>
@@ -187,19 +187,31 @@
                     <label class="form-label">Menu Name</label>
                     <input type="text" class="form-control" id="edit-menu-name">
                 </div>
-                <div class="row">
-                    <div class="col-6 mb-3">
+                <div class="row mb-3">
+                    <div class="col-6">
                         <label class="form-label">Price</label>
-                        <input type="number" class="form-control" id="edit-item-price">
+                        <input type="number" class="form-control" id="edit-item-price" oninput="updateEditModalTotals()">
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6">
                         <label class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="edit-item-qty" min="1">
+                        <input type="number" class="form-control" id="edit-item-qty" min="1" oninput="updateEditModalTotals()">
                     </div>
                 </div>
+                <!-- Subtotal Before Discount | Discount Input -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label text-muted small">Subtotal (Before Disc)</label>
+                        <input type="text" class="form-control bg-light" id="edit-item-subtotal-gross" readonly>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Item(s) Discount (Rp)</label>
+                        <input type="number" class="form-control" id="edit-item-discount" value="0" oninput="updateEditModalTotals()">
+                    </div>
+                </div>
+                <!-- Final Subtotal -->
                 <div class="mb-3">
-                    <label class="form-label">Item Discount (Rp)</label>
-                    <input type="number" class="form-control" id="edit-item-discount" value="0">
+                    <label class="form-label fw-bold">Item Subtotal (Net)</label>
+                    <input type="text" class="form-control fw-bold bg-light" id="edit-item-subtotal-net" readonly>
                 </div>
             </div>
             <div class="modal-footer">
@@ -296,12 +308,12 @@
             subtotal += (price * qty) - disc;
         });
 
-        const globalDiscount = parseFloat(document.getElementById('global-discount').value) || 0;
+        const globalDiscountPercent = parseFloat(document.getElementById('global-discount-percent').value) || 0;
         const taxPercent = parseFloat(document.getElementById('tax-percent').value) || 0;
-        const taxableAmount = Math.max(0, subtotal - globalDiscount);
-        const taxAmount = Math.round(taxableAmount * (taxPercent / 100)); // API expects integer usually? Migration said decimal for tax percent, but tax_amount logic in controller was round(). 
-        // Migration of taxes: integer tax_amount.
-        // Let's send integer tax_amount.
+        
+        const globalDiscountAmount = subtotal * (globalDiscountPercent / 100);
+        const taxableAmount = Math.max(0, subtotal - globalDiscountAmount);
+        const taxAmount = Math.round(taxableAmount * (taxPercent / 100)); 
         const totalAmount = Math.round(taxableAmount + taxAmount);
 
         // API Payload
@@ -312,7 +324,7 @@
             tax_amount: taxAmount,
             total_amount: totalAmount,
             tax_percent: taxPercent,
-            global_discount: globalDiscount,
+            global_discount_percent: globalDiscountPercent,
             order_items: cart.map(i => ({
                 id: i.id,
                 menu_name: i.name, // Manual name override
@@ -343,14 +355,19 @@
     
     async function requestPrint(orderId) {
        try {
-           const res = await fetch(`{{ url("/api/orders") }}/${orderId}/print`, { method: 'POST' });
+           const res = await fetch(`{{ url("/api/orders") }}/${orderId}/print`, { 
+               method: 'POST', 
+               headers: {
+                   'Authorization': `Bearer ${apiToken}`,
+                   'Accept': 'application/json'
+               }
+           });
            if(res.ok) showToast('Print command sent!', 'success');
            else showToast('Print failed (Check server logs)', 'danger');
        } catch (e) {
            showToast('Print connection error', 'danger');
        }
     }
-
 
     // --- RENDERING ---
     function renderMenu() {
@@ -425,22 +442,22 @@
             subtotal += (price * qty) - disc;
         });
 
-        const globalDiscount = parseFloat(document.getElementById('global-discount').value) || 0;
+        const globalDiscountPercent = parseFloat(document.getElementById('global-discount-percent').value) || 0;
         const taxPercent = parseFloat(document.getElementById('tax-percent').value) || 0;
 
-        // Apply global discount first? Rules usually: Subtotal -> Discount -> Tax.
-        // Let's assume Subtotal is aggregated item totals (already net of item discounts).
-        // Then subtract global discount.
-        // Then apply tax on the result.
+        // Calculate global discount amount
+        const globalDiscountAmount = subtotal * (globalDiscountPercent / 100);
+
+        // Taxable amount
+        const taxableAmount = Math.max(0, subtotal - globalDiscountAmount);
         
-        // Instructor requirement usually: (Subtotal - GlobalDiscount) * Tax%
-        // Let's stick to standard: Taxable Amount = Subtotal - Global Discount.
-        // Ensure taxable amount isn't negative.
-        const taxableAmount = Math.max(0, subtotal - globalDiscount);
+        // Tax
         const tax = taxableAmount * (taxPercent / 100);
+        
+        // Total
         const total = taxableAmount + tax;
 
-        updateTotals(subtotal, tax, total, globalDiscount);
+        updateTotals(subtotal, tax, total, globalDiscountAmount);
         document.getElementById('btn-pay').disabled = false;
         
         const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
@@ -463,7 +480,6 @@
 
 
     // --- ACTIONS ---
-    // --- ACTIONS ---
     const editModal = new bootstrap.Modal(document.getElementById('editItemModal'));
 
     function openEditModal(id) {
@@ -476,7 +492,20 @@
         document.getElementById('edit-item-qty').value = item.qty;
         document.getElementById('edit-item-discount').value = item.item_discount || 0;
 
+        updateEditModalTotals(); // Calc initial values
         editModal.show();
+    }
+
+    function updateEditModalTotals() {
+        const price = parseFloat(document.getElementById('edit-item-price').value) || 0;
+        const qty = parseInt(document.getElementById('edit-item-qty').value) || 0;
+        const discount = parseFloat(document.getElementById('edit-item-discount').value) || 0;
+
+        const gross = price * qty;
+        const net = gross - discount;
+
+        document.getElementById('edit-item-subtotal-gross').value = 'Rp ' + gross.toLocaleString();
+        document.getElementById('edit-item-subtotal-net').value = 'Rp ' + net.toLocaleString();
     }
 
     function saveItemChanges() {
@@ -497,20 +526,9 @@
         }
     }
 
-    // Removed updateCartQty as we use modal now (or keep for quick qty change if you want, but I replaced the input with buttons usually. 
-    // Wait, previous renderCart replaced input with just text and Edit button. So updateCartQty is dead code unless I kept the input.
-    // I replaced the input in renderCart with just text display. So I can remove updateCartQty.
 
     function addToCart(id) {
         const item = menuItems.find(i => i.id === id);
-        // Check if existing item in cart matches ID. 
-        // Note: If user edits name/price, it's still same ID. 
-        // If we want allow "variants", we need unique cart IDs. 
-        // For simple manual input, let's assume one entry per Menu ID.
-        // If they want to add same item twice with different prices, that requires "unique cart entry id".
-        // Current requirement: "edit button ... change menu name".
-        // Let's stick to ID based.
-
         const existing = cart.find(c => c.id === id);
         if (existing) {
             existing.qty++;
@@ -575,7 +593,6 @@
             const order = await submitOrder();
             currentOrderId = order.id;
             
-
             document.getElementById('payment-step-1').classList.add('d-none');
             document.getElementById('payment-step-success').classList.remove('d-none');
             document.getElementById('success-order-id').innerText = order.id;
