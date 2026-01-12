@@ -1,0 +1,390 @@
+{
+    "info": {
+        "_postman_id": "b48322b5-75fa-47d7-8124-c402ee964326",
+        "name": "AdvWeb UAS API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "register"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Admin User\",\n    \"email\": \"admin_api@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"role\": \"admin\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "register"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "login"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "logout"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Get User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/user",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "user"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Menu Items",
+            "item": [
+                {
+                    "name": "Get All Menu Items",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/menu-items",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "menu-items"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Menu Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Nasi Goreng Special\",\n    \"price\": 25000,\n    \"image_asset\": \"images/nasi_goreng.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/menu-items",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "menu-items"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Menu Item",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/menu-items/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "menu-items", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Menu Item",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Nasi Goreng Super Special\",\n    \"price\": 30000\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/menu-items/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "menu-items", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Menu Item",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/menu-items/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "menu-items", "1"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Orders",
+            "item": [
+                {
+                    "name": "Get All Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "orders"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Order",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"payment_method\": \"CASH\",\n    \"table_number\": \"A1\",\n    \"items\": [\n        {\n            \"id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"id\": 2,\n            \"quantity\": 1\n        }\n    ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "orders"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Order",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "orders", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Order Payment Status",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"payment_status\": \"PAID\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "orders", "1"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Sales",
+            "item": [
+                {
+                    "name": "Get Sales Data",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/admin/sales",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "admin", "sales"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Printer",
+            "item": [
+                {
+                    "name": "Print Order",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/1/print",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "orders", "1", "print"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        }
+    ]
+}
