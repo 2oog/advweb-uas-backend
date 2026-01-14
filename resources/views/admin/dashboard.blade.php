@@ -3,63 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Resto POS</title>
+    <title>Admin Dashboard - Resto POS</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; }
+        .accordion-button:not(.collapsed) {
+            background-color: #e7f1ff;
+            color: #0c63e4;
+        }
     </style>
 </head>
 <body>
 
 <!-- TOP NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-            <i class="fas fa-utensils me-2"></i>Resto POS
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/') }}">
-                        <i class="fas fa-cash-register me-1"></i> Order
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/pos/history') }}">
-                        <i class="fas fa-history me-1"></i> History
-                    </a>
-                </li>
-                @if(auth()->user()->isAdmin())
-                <li class="nav-item">
-                    <a class="nav-link text-warning fw-bold active" href="{{ url('/admin/dashboard') }}">
-                        <i class="fas fa-chart-line me-1"></i> Admin Dashboard
-                    </a>
-                </li>
-                @endif
-                <li class="nav-item">
-                    <a class="nav-link text-danger fw-bold" href="{{ route('logout') }}">
-                        <i class="fas fa-sign-out-alt me-1"></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+@include('partials.navbar')
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold mb-0"><i class="fas fa-chart-pie me-2"></i>Sales Dashboard</h4>
+            <h4 class="fw-bold mb-0"><i class="fas fa-chart-pie me-2"></i>Admin Dashboard</h4>
             <span class="text-muted">Welcome, {{ auth()->user()->name }}</span>
         </div>
     </div>
 
+    <!-- SALES DASHBOARD (ALWAYS VISIBLE) -->
     <div class="row g-4 mb-4">
         <!-- Sales Card -->
         <div class="col-md-6">
@@ -81,33 +51,113 @@
         </div>
     </div>
 
-    <!-- Menu Management Section -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold"><i class="fas fa-utensils me-2"></i>Menu Management</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMenuItemModal">
-                <i class="fas fa-plus me-1"></i> Add Menu Item
-            </button>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th class="ps-4" style="width: 100px;">Image</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th class="text-end pe-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="menu-table-body">
-                        <tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary"></div></td></tr>
-                    </tbody>
-                </table>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- ACCORDION MANAGEMENT SECTIONS -->
+    <div class="accordion shadow-sm" id="adminAccordion">
+        
+        <!-- MENU MANAGEMENT -->
+        <div class="accordion-item border-0 mb-3 rounded overflow-hidden">
+            <h2 class="accordion-header" id="headingMenu">
+                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMenu" aria-expanded="true" aria-controls="collapseMenu">
+                    <i class="fas fa-utensils me-2"></i> Menu Management
+                </button>
+            </h2>
+            <div id="collapseMenu" class="accordion-collapse collapse show" aria-labelledby="headingMenu" data-bs-parent="#adminAccordion">
+                <div class="accordion-body bg-white p-0">
+                    <div class="p-3 d-flex justify-content-end border-bottom">
+                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMenuItemModal">
+                            <i class="fas fa-plus me-1"></i> Add Menu Item
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 100px;">Image</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menu-table-body">
+                                <tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- USER MANAGEMENT -->
+        <div class="accordion-item border-0 rounded overflow-hidden">
+            <h2 class="accordion-header" id="headingUsers">
+                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                    <i class="fas fa-users-cog me-2"></i> User Management
+                </button>
+            </h2>
+            <div id="collapseUsers" class="accordion-collapse collapse" aria-labelledby="headingUsers" data-bs-parent="#adminAccordion">
+                <div class="accordion-body bg-white p-0">
+                    <div class="p-3 d-flex justify-content-end border-bottom">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="fas fa-plus me-1"></i> Add User
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Registered At</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($users as $user)
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark">{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $user->role === 'admin' ? 'warning' : 'info' }} text-dark">
+                                            {{ ucfirst($user->role) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $user->created_at->format('d M Y, H:i') }}</td>
+                                    <td class="text-end pe-4">
+                                        @if(auth()->id() !== $user->id)
+                                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteUser({{ $user->id }}, '{{ $user->name }}')">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        @else
+                                            <span class="text-muted small">Current User</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<!-- === MODALS === -->
 
 <!-- Add Menu Item Modal -->
 <div class="modal fade" id="addMenuItemModal" tabindex="-1">
@@ -175,6 +225,77 @@
     </div>
 </div>
 
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url('/admin/users') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="user-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="user-email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" name="role" required>
+                            <option value="employee">Employee</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="password" id="generated-password" required minlength="8" placeholder="Click generate">
+                            <button class="btn btn-outline-secondary" type="button" onclick="generatePassword()">
+                                <i class="fas fa-random"></i> Generate
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyPassword()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" onclick="copyPassword()">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete user <b id="delete-user-name"></b>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="delete-user-form" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Toast Container -->
@@ -221,8 +342,7 @@
     // Override generic alert
     window.alert = function(msg) { showToast(msg, 'warning'); }
 
-    // --- MAIN LOGIC ---
-
+    // --- SALES STATS LOGIC ---
     async function loadStats() {
         try {
             const res = await fetch('{{ url("/api/admin/sales") }}', {
@@ -235,6 +355,7 @@
         } catch (e) { console.error("Stats Error:", e); }
     }
 
+    // --- MENU LOGIC ---
     async function loadMenu() {
         try {
             const res = await fetch('{{ url("/api/menu-items") }}', {
@@ -258,19 +379,14 @@
 
         tbody.innerHTML = menuItems.map(item => {
             const imageAsset = item.image_asset || 'utensils'; 
-            
-            // Fix: Always prepend base URL for non-absolute paths
             let imageSrc = imageAsset;
             if (!imageAsset.startsWith('http')) {
-                // If it starts with slash, remove it to avoid double slash with base url
                 const path = imageAsset.startsWith('/') ? imageAsset.substring(1) : imageAsset;
-                // Prepend base url if it looks like a path
                 if (imageAsset.includes('/') || imageAsset.includes('.')) {
                     imageSrc = `{{ url('/') }}/${path}`;
                 }
             }
 
-            // Check if it's a fontawesome icon name
             const isIcon = !imageAsset.includes('/') && !imageAsset.includes('.') && imageAsset.length < 20;
 
             const imgHtml = isIcon 
@@ -323,21 +439,16 @@
         } catch (e) { showToast("Error: " + e.message, "danger"); }
     }
 
-    // --- UPDATE & DELETE ---
     function openEditModal(id) {
         const item = menuItems.find(i => i.id === id);
-        if (!item) {
-            console.error("Item not found for ID:", id);
-            return;
-        }
+        if (!item) return;
 
         document.getElementById('edit-menu-id').value = item.id;
         document.getElementById('edit-menu-name').value = item.name;
         document.getElementById('edit-menu-price').value = item.price;
         document.getElementById('edit-menu-image').value = ''; 
         
-        const modalEl = document.getElementById('editMenuItemModal');
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editMenuItemModal'));
         modal.show();
     }
 
@@ -365,10 +476,7 @@
             if (!res.ok) throw new Error((await res.json()).message || 'Failed to update');
 
             showToast("Item updated successfully!", "success");
-            
-            const modalEl = document.getElementById('editMenuItemModal');
-            bootstrap.Modal.getInstance(modalEl).hide();
-            
+            bootstrap.Modal.getInstance(document.getElementById('editMenuItemModal')).hide();
             loadMenu();
         } catch (e) { showToast("Error: " + e.message, "danger"); }
     }
@@ -388,6 +496,45 @@
             loadMenu();
         } catch (e) { showToast("Error: " + e.message, "danger"); }
     }
+
+    // --- USER MANAGEMENT LOGIC ---
+    function generatePassword() {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+        let password = "";
+        for (let i = 0; i < 12; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById("generated-password").value = password;
+    }
+
+    function copyPassword() {
+        const name = document.getElementById("user-name").value || 'User';
+        const email = document.getElementById("user-email").value || 'email@example.com';
+        const password = document.getElementById("generated-password").value;
+        
+        if (password) {
+            const textToCopy = `Name: ${name}\nEmail: ${email}\nPassword: ${password}\nPlease change your password when logging in for the first time.`;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Password copied to clipboard", "success");
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    }
+
+    function confirmDeleteUser(id, name) {
+        document.getElementById('delete-user-name').innerText = name;
+        document.getElementById('delete-user-form').action = `{{ url('/admin/users') }}/${id}`;
+        
+        const modal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        modal.show();
+    }
+
+    // Auto-generate password when Add User modal is opened
+    document.getElementById('addUserModal').addEventListener('show.bs.modal', event => {
+        generatePassword();
+    });
 
     // Init 
     document.addEventListener('DOMContentLoaded', () => {

@@ -52,9 +52,6 @@
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary fw-bold py-2">Sign In</button>
                 </div>
-                <div class="text-center mt-3">
-                    <small>Don't have an Employee account? <a href="{{ url('/register') }}">Register</a></small>
-                </div>
             </form>
         </div>
         <div class="card-footer bg-light text-center py-3 border-0 rounded-bottom">
