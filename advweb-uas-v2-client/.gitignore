@@ -21,9 +21,3 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-
-COM3
-
-# BACKUP BEFORE DECOUPLING
-advweb-uas-v2-client-ori-bak.7z
-advweb-uas-v2-bak.7z

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\Api\Admin\SalesController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OrderController;
