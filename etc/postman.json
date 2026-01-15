@@ -1,87 +1,82 @@
 {
     "info": {
-        "_postman_id": "b48322b5-75fa-47d7-8124-c402ee964326",
-        "name": "AdvWeb UAS API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+        "_postman_id": "3388540f-0787-4172-87cf-3a68bd371f13",
+        "name": "AdvWeb UAS API v2.1",
+        "description": "API Documentation for ADVWEB UAS V2 Project",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "48440040"
     },
     "item": [
         {
             "name": "Auth",
             "item": [
                 {
-                    "name": "Register",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/register",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "register"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Register (Admin)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"Admin User\",\n    \"email\": \"admin_api@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"role\": \"admin\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/register",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "register"]
-                        }
-                    },
-                    "response": []
-                },
-                {
                     "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                                    "    console.log(\"Token updated successfully\");",
+                                    "}"
+                                ],
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {}
+                            }
+                        }
+                    ],
                     "request": {
                         "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password\"\n}"
+                            "raw": "{\n    \"email\": \"x@x.com\",\n    \"password\": \"qwerasdf\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/login",
+                            "raw": "{{base_url}}/login",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "login"]
+                            "path": ["login"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register (Admin Only)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password\",\n    \"role\": \"employee\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["register"]
                         }
                     },
                     "response": []
@@ -89,40 +84,77 @@
                 {
                     "name": "Logout",
                     "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
                         "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/logout",
+                            "raw": "{{base_url}}/logout",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "logout"]
+                            "path": ["logout"]
                         }
                     },
                     "response": []
-                }
-            ]
-        },
-        {
-            "name": "User",
-            "item": [
+                },
                 {
                     "name": "Get User",
                     "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/user",
+                            "raw": "{{base_url}}/user",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "user"]
+                            "path": ["user"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Password",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"password\",\n    \"password\": \"newpassword\",\n    \"password_confirmation\": \"newpassword\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/password",
+                            "host": ["{{base_url}}"],
+                            "path": ["password"]
                         }
                     },
                     "response": []
@@ -133,107 +165,153 @@
             "name": "Menu Items",
             "item": [
                 {
-                    "name": "Get All Menu Items",
+                    "name": "List Menu Items",
                     "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/menu-items",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "menu-items"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Menu Item",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"Nasi Goreng Special\",\n    \"price\": 25000,\n    \"image_asset\": \"images/nasi_goreng.jpg\"\n}"
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
                         },
+                        "method": "GET",
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/menu-items",
+                            "raw": "{{base_url}}/menu-items",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "menu-items"]
+                            "path": ["menu-items"]
                         }
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "name": "List Menu Items Example",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/menu-items",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["menu-items"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Nasi Goreng\",\n        \"price\": 15000,\n        \"image_asset\": \"nasi_goreng.jpg\",\n        \"created_at\": \"...\",\n        \"updated_at\": \"...\"\n    }\n]"
+                        }
+                    ]
                 },
                 {
                     "name": "Get Menu Item",
                     "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/menu-items/1",
+                            "raw": "{{base_url}}/menu-items/1",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "menu-items", "1"]
+                            "path": ["menu-items", "1"]
                         }
                     },
                     "response": []
                 },
                 {
-                    "name": "Update Menu Item",
+                    "name": "Create Menu Item (Admin)",
                     "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Nasi Goreng Super Special\",\n    \"price\": 30000\n}"
+                            "raw": "{\n    \"name\": \"New Item\",\n    \"price\": 25000,\n    \"image_asset\": \"item.jpg\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/menu-items/1",
+                            "raw": "{{base_url}}/menu-items",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "menu-items", "1"]
+                            "path": ["menu-items"]
                         }
                     },
                     "response": []
                 },
                 {
-                    "name": "Delete Menu Item",
+                    "name": "Update Menu Item (Admin)",
                     "request": {
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Item\",\n    \"price\": 30000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
                             }
-                        ],
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/menu-items/1",
+                            "raw": "{{base_url}}/menu-items/1",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "menu-items", "1"]
+                            "path": ["menu-items", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Menu Item (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/menu-items/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["menu-items", "1"]
                         }
                     },
                     "response": []
@@ -244,45 +322,24 @@
             "name": "Orders",
             "item": [
                 {
-                    "name": "Get All Orders",
+                    "name": "List Orders",
                     "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/orders",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "orders"]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Order",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"payment_method\": \"CASH\",\n    \"table_number\": \"A1\",\n    \"items\": [\n        {\n            \"id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"id\": 2,\n            \"quantity\": 1\n        }\n    ]\n}"
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
                         },
+                        "method": "GET",
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/orders",
+                            "raw": "{{base_url}}/orders",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "orders"]
+                            "path": ["orders"]
                         }
                     },
                     "response": []
@@ -290,89 +347,285 @@
                 {
                     "name": "Get Order",
                     "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/orders/1",
+                            "raw": "{{base_url}}/orders/1",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "orders", "1"]
+                            "path": ["orders", "1"]
                         }
                     },
                     "response": []
                 },
                 {
-                    "name": "Update Order Payment Status",
+                    "name": "Create Order",
                     "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"payment_status\": \"PAID\"\n}"
+                            "raw": "{\n    \"payment_method\": \"cash\",\n    \"table_number\": \"1\",\n    \"items\": [\n        {\n            \"id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"id\": 2,\n            \"quantity\": 1\n        }\n    ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/orders/1",
+                            "raw": "{{base_url}}/orders",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "orders", "1"]
+                            "path": ["orders"]
                         }
                     },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Sales",
-            "item": [
+                    "response": [
+                        {
+                            "name": "Create Order Example",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"payment_method\": \"cash\",\n    \"table_number\": \"12\",\n    \"items\": [\n        { \"id\": 1, \"quantity\": 2 },\n        { \"id\": 5, \"quantity\": 1 }\n    ]\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/orders",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["orders"]
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"id\": 1,\n    \"table_number\": \"12\",\n    \"payment_method\": \"cash\",\n    \"payment_status\": \"PAID\",\n    \"subtotal\": 30000,\n    \"tax\": 3000,\n    \"total\": 33000,\n    \"orderItems\": [\n        {\n            \"id\": 1,\n            \"name\": \"Nasi Goreng\",\n            \"quantity\": 2,\n            \"price\": 15000\n        }\n    ]\n}"
+                        }
+                    ]
+                },
                 {
-                    "name": "Get Sales Data",
+                    "name": "Update Order",
                     "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"payment_status\": \"completed\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
                             }
-                        ],
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/admin/sales",
+                            "raw": "{{base_url}}/orders/1",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "admin", "sales"]
+                            "path": ["orders", "1"]
                         }
                     },
                     "response": []
-                }
-            ]
-        },
-        {
-            "name": "Printer",
-            "item": [
+                },
+                {
+                    "name": "Delete Order",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/orders/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["orders", "1"]
+                        }
+                    },
+                    "response": []
+                },
                 {
                     "name": "Print Order",
                     "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
                         "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json"
-                            }
-                        ],
+                        "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/orders/1/print",
+                            "raw": "{{base_url}}/orders/1/print",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "orders", "1", "print"]
+                            "path": ["orders", "1", "print"]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Print Success Example",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/orders/1/print",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["orders", "1", "print"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\"message\": \"Print job sent successfully\"}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Admin",
+            "item": [
+                {
+                    "name": "Sales Dashboard",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/admin/sales",
+                            "host": ["{{base_url}}"],
+                            "path": ["admin", "sales"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Users",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["users"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Another User\",\n    \"email\": \"anotheruser@example.com\",\n    \"password\": \"password\",\n    \"role\": \"employee\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["users"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "1"]
                         }
                     },
                     "response": []
@@ -383,8 +636,11 @@
     "variable": [
         {
             "key": "base_url",
-            "value": "http://localhost:8000",
-            "type": "string"
+            "value": "http://localhost/advweb-uas-v2/api"
+        },
+        {
+            "key": "token",
+            "value": ""
         }
     ]
 }

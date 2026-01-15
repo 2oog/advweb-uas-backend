@@ -499,7 +499,7 @@
 
     // --- USER MANAGEMENT LOGIC ---
     function generatePassword() {
-        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let password = "";
         for (let i = 0; i < 12; i++) {
             password += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -532,7 +532,7 @@
     }
 
     // Auto-generate password when Add User modal is opened
-    document.getElementById('addUserModal').addEventListener('show.bs.modal', event => {
+    document.getElementById('addUserModal').addEventListener('show.bs.modal', event => {    
         generatePassword();
     });
 
